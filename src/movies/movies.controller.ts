@@ -28,6 +28,11 @@ export class MoviesController {
     return this.movieService.filterByMetascore(metascore);
   }
 
+  @Get('starname')
+  async filterByStarname(@Body('starname') starname: string): Promise<Movie[]> {
+    return this.movieService.filterByStarname(starname);
+  }
+
   @Get()
   async findAll(): Promise<Movie[]> {
     return this.movieService.findAll();

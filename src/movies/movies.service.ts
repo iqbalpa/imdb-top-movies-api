@@ -4,6 +4,11 @@ import { Movie } from '@prisma/client';
 
 @Injectable()
 export class MoviesService {
+  async findAll(): Promise<Movie[]> {
+    const movies: Movie[] = await prisma.movie.findMany({});
+    return movies;
+  }
+
   async findByTitle(title: string): Promise<Movie> {
     const movie: Movie = await prisma.movie.findUnique({
       where: { SeriesTitle: title },
@@ -32,8 +37,19 @@ export class MoviesService {
     return movies;
   }
 
-  async findAll(): Promise<Movie[]> {
-    const movies: Movie[] = await prisma.movie.findMany({});
+  async filterByStarname(starname: string): Promise<Movie[]> {
+    const movies: Movie[] = await prisma.movie.findMany({
+      where: {
+        OR: [
+          { Star1: starname },
+          { Star2: starname },
+          { Star3: starname },
+          { Star4: starname },
+        ],
+      },
+    });
     return movies;
   }
+
+  // TODO: filter by genre, runtime, released year
 }
