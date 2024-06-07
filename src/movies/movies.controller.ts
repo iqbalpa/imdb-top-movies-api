@@ -33,6 +33,11 @@ export class MoviesController {
     return this.movieService.filterByStarname(starname);
   }
 
+  @Get('genre')
+  async filterByGenre(@Body('genre') genre: string): Promise<Movie[]> {
+    return this.movieService.filterByGenre(genre);
+  }
+
   @Get()
   async findAll(): Promise<Movie[]> {
     return this.movieService.findAll();

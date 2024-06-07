@@ -52,4 +52,23 @@ export class MoviesService {
   }
 
   // TODO: filter by genre, runtime, released year
+  async filterByGenre(genre: string): Promise<Movie[]> {
+    const movies: Movie[] = await prisma.movie.findMany({
+      where: { Genre: genre },
+    });
+    return movies;
+  }
+
+  async filterByRuntime(runtime: number): Promise<Movie[]> {
+    const movies: Movie[] = await prisma.movie.findMany();
+    const filteredMovies: Movie[] = movies.filter((movie) => {
+      const match = movie.Runtime.match(/^(\d+) min$/);
+      if (match) {
+        const movieRuntime = parseInt(match[1], 10);
+        return movieRuntime <= runtime;
+      }
+      return false;
+    });
+    return filteredMovies;
+  }
 }
