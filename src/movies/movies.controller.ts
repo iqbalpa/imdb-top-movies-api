@@ -16,6 +16,11 @@ export class MoviesController {
     return this.movieService.findByDirector(director);
   }
 
+  @Get('rating')
+  async filterByRating(@Body('rating') rating: number): Promise<Movie[]> {
+    return this.movieService.filterByRating(rating);
+  }
+
   @Get()
   async findAll(): Promise<Movie[]> {
     return this.movieService.findAll();
