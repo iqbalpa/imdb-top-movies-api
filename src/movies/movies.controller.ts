@@ -21,6 +21,13 @@ export class MoviesController {
     return this.movieService.filterByRating(rating);
   }
 
+  @Get('metascore')
+  async filterByMetascore(
+    @Body('metascore') metascore: number,
+  ): Promise<Movie[]> {
+    return this.movieService.filterByMetascore(metascore);
+  }
+
   @Get()
   async findAll(): Promise<Movie[]> {
     return this.movieService.findAll();

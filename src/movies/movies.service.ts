@@ -19,8 +19,15 @@ export class MoviesService {
   }
 
   async filterByRating(rating: number): Promise<Movie[]> {
-    let movies: Movie[] = await prisma.movie.findMany({
+    const movies: Movie[] = await prisma.movie.findMany({
       where: { Rating: { gte: rating } },
+    });
+    return movies;
+  }
+
+  async filterByMetascore(metascore: number): Promise<Movie[]> {
+    const movies: Movie[] = await prisma.movie.findMany({
+      where: { MetaScore: { gte: metascore } },
     });
     return movies;
   }
