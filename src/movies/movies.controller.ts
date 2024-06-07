@@ -38,6 +38,11 @@ export class MoviesController {
     return this.movieService.filterByGenre(genre);
   }
 
+  @Get('runtime')
+  async filterByRuntime(@Body('runtime') runtime: number): Promise<Movie[]> {
+    return this.movieService.filterByRuntime(runtime);
+  }
+
   @Get()
   async findAll(): Promise<Movie[]> {
     return this.movieService.findAll();
