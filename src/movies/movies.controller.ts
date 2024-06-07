@@ -6,13 +6,18 @@ import { MoviesService } from './movies.service';
 export class MoviesController {
   constructor(private readonly movieService: MoviesService) {}
 
+  @Get('title')
+  async findByTitle(@Body('title') title: string): Promise<Movie> {
+    return this.movieService.findByTitle(title);
+  }
+
+  @Get('director')
+  async findByDirector(@Body('director') director: string): Promise<Movie[]> {
+    return this.movieService.findByDirector(director);
+  }
+
   @Get()
   async findAll(): Promise<Movie[]> {
     return this.movieService.findAll();
-  }
-
-  @Get(':title')
-  async findOne(@Body('title') title: string): Promise<Movie> {
-    return this.movieService.findOne(title);
   }
 }
