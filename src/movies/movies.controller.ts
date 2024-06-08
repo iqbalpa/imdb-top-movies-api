@@ -60,6 +60,11 @@ export class MoviesController {
     return this.movieService.filterByCertificate(certificate);
   }
 
+  @Get('gross')
+  async filterByGross(@Query('gross') gross: string): Promise<Movie[]> {
+    return this.movieService.filterByGross(gross);
+  }
+
   @Get()
   async findAll(): Promise<Movie[]> {
     return this.movieService.findAll();

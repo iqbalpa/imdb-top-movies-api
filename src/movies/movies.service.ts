@@ -95,4 +95,18 @@ export class MoviesService {
     });
     return movies;
   }
+
+  async filterByGross(gross: string) {
+    const grossFloat: number = parseFloat(gross);
+    const movies: Movie[] = await prisma.movie.findMany();
+    const filteredMovies: Movie[] = movies.filter((movie) => {
+      if (movie.Gross) {
+        const cleanedGross: string = movie.Gross.replace(/,/g, '');
+        const cleanedGrossFloat: number = parseFloat(cleanedGross);
+        return cleanedGrossFloat >= grossFloat;
+      }
+      return false;
+    });
+    return filteredMovies;
+  }
 }
