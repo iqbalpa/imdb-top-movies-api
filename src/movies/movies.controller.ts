@@ -1,4 +1,4 @@
-import { Controller, Get, Body } from '@nestjs/common';
+import { Controller, Get, Body, Query } from '@nestjs/common';
 import { Movie } from '@prisma/client';
 import { MoviesService } from './movies.service';
 
@@ -41,6 +41,14 @@ export class MoviesController {
   @Get('runtime')
   async filterByRuntime(@Body('runtime') runtime: number): Promise<Movie[]> {
     return this.movieService.filterByRuntime(runtime);
+  }
+
+  @Get('year')
+  async filterByReleasedYear(
+    @Query('from') from: number,
+    @Query('to') to: number,
+  ): Promise<Movie[]> {
+    return this.movieService.filterByReleasedYear(Number(from), Number(to));
   }
 
   @Get()

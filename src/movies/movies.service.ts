@@ -71,4 +71,17 @@ export class MoviesService {
     });
     return filteredMovies;
   }
+
+  async filterByReleasedYear(from: number, to: number) {
+    const movies: Movie[] = await prisma.movie.findMany();
+    const filteredMovies: Movie[] = movies.filter((movie) => {
+      const match = movie.ReleasedYear.match(/^(\d+)/);
+      if (match) {
+        const releasedYear = parseInt(match[0], 10);
+        return releasedYear >= from && releasedYear <= to;
+      }
+      return false;
+    });
+    return filteredMovies;
+  }
 }
