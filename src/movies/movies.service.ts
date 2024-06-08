@@ -88,4 +88,11 @@ export class MoviesService {
     });
     return filteredMovies;
   }
+
+  async filterByCertificate(certificate: string) {
+    const movies: Movie[] = await prisma.movie.findMany({
+      where: { Certificate: certificate },
+    });
+    return movies;
+  }
 }

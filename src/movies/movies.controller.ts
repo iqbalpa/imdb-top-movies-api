@@ -53,6 +53,13 @@ export class MoviesController {
     return this.movieService.filterByReleasedYear(from, to);
   }
 
+  @Get('certificate')
+  async filterByCertificate(
+    @Query('certificate') certificate: string,
+  ): Promise<Movie[]> {
+    return this.movieService.filterByCertificate(certificate);
+  }
+
   @Get()
   async findAll(): Promise<Movie[]> {
     return this.movieService.findAll();
