@@ -23,16 +23,18 @@ export class MoviesService {
     return movies;
   }
 
-  async filterByRating(rating: number): Promise<Movie[]> {
+  async filterByRating(rating: string): Promise<Movie[]> {
+    const ratingFloat: number = parseFloat(rating);
     const movies: Movie[] = await prisma.movie.findMany({
-      where: { Rating: { gte: rating } },
+      where: { Rating: { gte: ratingFloat } },
     });
     return movies;
   }
 
-  async filterByMetascore(metascore: number): Promise<Movie[]> {
+  async filterByMetascore(metascore: string): Promise<Movie[]> {
+    const metascoreFloat: number = parseFloat(metascore);
     const movies: Movie[] = await prisma.movie.findMany({
-      where: { MetaScore: { gte: metascore } },
+      where: { MetaScore: { gte: metascoreFloat } },
     });
     return movies;
   }
@@ -59,26 +61,29 @@ export class MoviesService {
     return movies;
   }
 
-  async filterByRuntime(runtime: number): Promise<Movie[]> {
+  async filterByRuntime(runtime: string): Promise<Movie[]> {
+    const runtimeFloat: number = parseFloat(runtime);
     const movies: Movie[] = await prisma.movie.findMany();
     const filteredMovies: Movie[] = movies.filter((movie) => {
       const match = movie.Runtime.match(/^(\d+) min$/);
       if (match) {
         const movieRuntime = parseInt(match[1], 10);
-        return movieRuntime <= runtime;
+        return movieRuntime <= runtimeFloat;
       }
       return false;
     });
     return filteredMovies;
   }
 
-  async filterByReleasedYear(from: number, to: number) {
+  async filterByReleasedYear(from: string, to: string) {
+    const fromFloat: number = parseFloat(from);
+    const toFloat: number = parseFloat(to);
     const movies: Movie[] = await prisma.movie.findMany();
     const filteredMovies: Movie[] = movies.filter((movie) => {
       const match = movie.ReleasedYear.match(/^(\d+)/);
       if (match) {
         const releasedYear = parseInt(match[0], 10);
-        return releasedYear >= from && releasedYear <= to;
+        return releasedYear >= fromFloat && releasedYear <= toFloat;
       }
       return false;
     });

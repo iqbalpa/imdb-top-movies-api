@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { Movie } from '@prisma/client';
 import { MoviesService } from './movies.service';
 
@@ -7,48 +7,50 @@ export class MoviesController {
   constructor(private readonly movieService: MoviesService) {}
 
   @Get('title')
-  async findByTitle(@Body('title') title: string): Promise<Movie> {
+  async findByTitle(@Query('title') title: string): Promise<Movie> {
     return this.movieService.findByTitle(title);
   }
 
   @Get('director')
-  async findByDirector(@Body('director') director: string): Promise<Movie[]> {
+  async findByDirector(@Query('director') director: string): Promise<Movie[]> {
     return this.movieService.findByDirector(director);
   }
 
   @Get('rating')
-  async filterByRating(@Body('rating') rating: number): Promise<Movie[]> {
+  async filterByRating(@Query('rating') rating: string): Promise<Movie[]> {
     return this.movieService.filterByRating(rating);
   }
 
   @Get('metascore')
   async filterByMetascore(
-    @Body('metascore') metascore: number,
+    @Query('metascore') metascore: string,
   ): Promise<Movie[]> {
     return this.movieService.filterByMetascore(metascore);
   }
 
   @Get('starname')
-  async filterByStarname(@Body('starname') starname: string): Promise<Movie[]> {
+  async filterByStarname(
+    @Query('starname') starname: string,
+  ): Promise<Movie[]> {
     return this.movieService.filterByStarname(starname);
   }
 
   @Get('genre')
-  async filterByGenre(@Body('genre') genre: string): Promise<Movie[]> {
+  async filterByGenre(@Query('genre') genre: string): Promise<Movie[]> {
     return this.movieService.filterByGenre(genre);
   }
 
   @Get('runtime')
-  async filterByRuntime(@Body('runtime') runtime: number): Promise<Movie[]> {
+  async filterByRuntime(@Query('runtime') runtime: string): Promise<Movie[]> {
     return this.movieService.filterByRuntime(runtime);
   }
 
   @Get('year')
   async filterByReleasedYear(
-    @Query('from') from: number,
-    @Query('to') to: number,
+    @Query('from') from: string,
+    @Query('to') to: string,
   ): Promise<Movie[]> {
-    return this.movieService.filterByReleasedYear(Number(from), Number(to));
+    return this.movieService.filterByReleasedYear(from, to);
   }
 
   @Get()
