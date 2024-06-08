@@ -53,10 +53,9 @@ export class MoviesService {
     return movies;
   }
 
-  // TODO: filter by genre, runtime, released year
   async filterByGenre(genre: string): Promise<Movie[]> {
     const movies: Movie[] = await prisma.movie.findMany({
-      where: { Genre: genre },
+      where: { Genre: { contains: genre } },
     });
     return movies;
   }
