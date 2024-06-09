@@ -31,21 +31,5 @@ RUN pnpm run build
 FROM base
 COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
-EXPOSE 8000
-CMD [ "pnpm", "run start:prod" ]
-
-# # ---
-
-# FROM node:20-alpine
-
-# ENV NODE_ENV production
-
-# USER node
-# WORKDIR /home/node
-
-# COPY --from=builder --chown=node:node /home/node/package.json ./
-# COPY --from=builder --chown=node:node /home/node/pnpm-lock.yaml ./
-# COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
-# COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
-
-# CMD ["node", "dist/main"]
+EXPOSE 3000
+CMD [ "node", "dist/src/main" ]
