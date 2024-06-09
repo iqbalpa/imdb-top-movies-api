@@ -12,34 +12,40 @@
 # https://www.bretfisher.com/node-docker-good-defaults/
 # http://goldbergyoni.com/checklist-best-practice-of-node-js-in-production/
 
-FROM node:20-alpine as builder
+FROM node:20-alpine as base
 
-ENV NODE_ENV build
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-USER node
-WORKDIR /home/node
+COPY . /app
+WORKDIR /app
 
-COPY package.json ./
-COPY pnpm-lock.yaml ./
-RUN pnpm install
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-COPY --chown=node:node . .
-RUN npx prisma generate \
-    && pnpm run build \
-    && pnpm prune --omit=dev
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run build
 
-# ---
+FROM base
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
+EXPOSE 8000
+CMD [ "pnpm", "run start:prod" ]
 
-FROM node:20-alpine
+# # ---
 
-ENV NODE_ENV production
+# FROM node:20-alpine
 
-USER node
-WORKDIR /home/node
+# ENV NODE_ENV production
 
-COPY --from=builder --chown=node:node /home/node/package.json ./
-COPY --from=builder --chown=node:node /home/node/pnpm-lock.yaml ./
-COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
-COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
+# USER node
+# WORKDIR /home/node
 
-CMD ["node", "dist/main"]
+# COPY --from=builder --chown=node:node /home/node/package.json ./
+# COPY --from=builder --chown=node:node /home/node/pnpm-lock.yaml ./
+# COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
+# COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
+
+# CMD ["node", "dist/main"]
