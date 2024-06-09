@@ -1,21 +1,29 @@
-# THIS DOCKERFILE IS INTENDED FOR DEVELOPMENT ENVIRONMENTS
-# DO NOT USE THIS FOR PRODUCTION USAGES.
-
-version: '3'
-
+version: '3.8'
 services:
-  postgresql:
-    image: docker.io/bitnami/postgresql:16
+  imdb-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: imdb-api 
+    restart: always
     ports:
-      - '5432:5432'
+      - 8080:3000
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:13
+    container_name: postgresprisma
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
     volumes:
-      - 'postgresql_data:/bitnami/postgresql'
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - POSTGRESQL_DATABASE=nestjs
-      - POSTGRESQL_USERNAME=nestjs
-      - POSTGRESQL_PASSWORD=password
+      - postgres:/var/lib/postgresql/data
 
 volumes:
-  postgresql_data:
-    driver: local
+  postgres:
+    name: nest-prisma-docker-db

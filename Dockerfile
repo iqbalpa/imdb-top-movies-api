@@ -12,25 +12,49 @@
 # https://www.bretfisher.com/node-docker-good-defaults/
 # http://goldbergyoni.com/checklist-best-practice-of-node-js-in-production/
 
-FROM node:20-alpine as base
 
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+# # PNPM
+# FROM node:20-alpine as base
 
-COPY . /app
-WORKDIR /app
+# ENV PNPM_HOME="/pnpm"
+# ENV PATH="$PNPM_HOME:$PATH"
+# RUN corepack enable
 
-FROM base AS prod-deps
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+# COPY . /app
+# WORKDIR /app
+
+# FROM base AS prod-deps
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+
+# FROM base AS build
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+# RUN pnpm prisma generate
+# RUN pnpm run build
+
+# FROM base
+# COPY --from=prod-deps /app/node_modules /app/node_modules
+# COPY --from=build /app/dist /app/dist
+# EXPOSE 3000
+# CMD [ "node", "dist/src/main" ]
+
+
+# YARN
+FROM node:20-alpine AS base
 
 FROM base AS build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-# RUN pnpm exec prisma generate
-RUN pnpm run build
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn cache clean
+RUN yarn install --no-lockfile
+COPY . .
+RUN yarn prisma generate
+RUN yarn build
 
-FROM base
-COPY --from=prod-deps /app/node_modules /app/node_modules
-COPY --from=build /app/dist /app/dist
+FROM base AS production
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/package.json .
+COPY --from=build /app/prisma ./prisma
 EXPOSE 3000
-CMD [ "node", "dist/src/main" ]
+CMD ["sh", "-c", "yarn migrate && yarn start:prod"]
+

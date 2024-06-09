@@ -1,12 +1,15 @@
 # Versioning and metadata
 .git
 .gitignore
-.dockerignore
 
 # Build dependencies
 dist
 node_modules
 coverage
+
+# test
+test
+prisma/test.ts
 
 # Environment (contains sensitive data)
 .env
@@ -17,3 +20,5 @@ Dockerfile
 README.md
 .eslintrc.js
 nodemon.json
+.prettierrc
+docker.sh
